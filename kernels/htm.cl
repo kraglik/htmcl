@@ -39,6 +39,11 @@ test_allocations(global struct clheap* heap, global int* results) {
     free(heap, vec);
 }
 
+kernel void
+do_nothing(global struct clheap* heap) {
+
+}
+
 #endif
 
 
