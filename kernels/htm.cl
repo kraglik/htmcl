@@ -1,8 +1,20 @@
 #ifndef HTM_CL
 #define HTM_CL
 
-#include "htm.h"
-#include "kma.cl"
+struct neuron;
+struct synapse;
+struct dendrite;
+struct layer;
+struct htm_config;
+struct htm;
+
+struct synapse_list;
+struct neuron_list;
+struct dendrite_list;
+struct layer_list;
+
+struct layer_connection;
+
 
 kernel void
 get_clheap_size(global unsigned int* out) {
