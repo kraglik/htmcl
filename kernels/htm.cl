@@ -230,7 +230,7 @@ test_list_allocations(global struct clheap* heap, global unsigned long* results)
 
     unsigned int id = get_global_id(0);
 
-    for (unsigned int i = 0; i < 1; i++) {
+    for (unsigned int i = 0; i < 128; i++) {
 
         global list* l = new_node(heap, NULL, NULL);
 
@@ -240,13 +240,8 @@ test_list_allocations(global struct clheap* heap, global unsigned long* results)
         global list* current = l;
 
         for (unsigned int i = 0; i < 9; i++) {
-            current->next = new_node(heap, NULL, NULL);
-            current->next->data = current->data;
-
-            current = current->next;
+            append(heap, l, l->data);
         }
-
-        current = l;
 
         results[id] = 0;
 
