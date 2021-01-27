@@ -14,13 +14,18 @@ def build_ctx_queue_prg():
 
     current_dir = pathlib.Path(__file__).parent.absolute()
 
-    with open(os.path.join(current_dir, 'kernels', 'kma.cl'), 'r') as f:
-        cl_kma = f.read()
+    prg_text = ""
 
-    with open(os.path.join(current_dir, 'kernels', 'htm.cl'), 'r') as f:
-        cl_htm = f.read()
+    kernels = [
+        'kma.cl',
+        'list.cl',
+        'htm.cl'
+    ]
 
-    prg_text = cl_kma + cl_htm
+    for file_name in kernels:
+        with open(os.path.join(current_dir, 'kernels', file_name), 'r') as f:
+            cl_file = f.read()
+            prg_text += cl_file
 
     with open('debug.cl', 'w') as f:
         f.write(prg_text)
@@ -34,7 +39,7 @@ def build_ctx_queue_prg():
 def main():
     ctx, queue, prg = build_ctx_queue_prg()
 
-    heap = kma.build_kma(ctx, queue, prg, 2048)
+    heap = kma.build_kma(ctx, queue, prg, 16)
 
     test_allocations = prg.test_allocations
     test_list_allocations = prg.test_list_allocations

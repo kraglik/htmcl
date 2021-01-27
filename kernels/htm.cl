@@ -1,196 +1,93 @@
-#ifndef HTM_CL
-#define HTM_CL
-
 struct neuron;
+struct column;
 struct synapse;
-struct dendrite;
+struct basal_dendrite;
+struct proximal_dendrite;
+struct apical_dendrite;
 struct layer;
+struct layer_connection;
 struct htm_config;
 struct htm;
 
-struct layer_connection;
+typedef struct neuron {
 
-typedef struct list {
-    global struct list* next;
-    global void* data;
-} list;
+    global struct column* column;
+    unsigned long id;
 
+    global list* distal_segments;
+    global list* apical_segments;
 
-global list*
-new_node(global struct clheap* heap, global list* next, global void* data) {
-    global list* node = (global list*)malloc(heap, sizeof(list));
+    bool active, was_active, learning, was_learning, predictive, was_predictive;
 
-    node->next = next;
-    node->data = data;
+} neuron;
 
-    return node;
-}
+typedef struct column {
+    global struct neuron* neuron;
+    global list* synapses;
 
+    bool learning, was_learning, active, was_active, sequence;
+} column;
 
-void
-remove_first_entry(
-    global struct clheap* heap,
-    global list* global * l,
-    global void* item
-) {
+typedef struct synapse {
 
-    global list* current = *l;
-    global list* global * prev_next_ptr = l;
+} synapse;
 
-    while (current != NULL && current->next != NULL && current->next->data != item) {
-        prev_next_ptr = &current->next;
-        current = current->next;
-    }
+typedef struct basal_dendrite {
 
-    if (current != NULL && current->next != NULL) {
-        *prev_next_ptr = current->next->next;
-        free(heap, current);
-    }
+} basal_dendrite;
 
-}
+typedef struct proximal_dendrite {
 
+} proximal_dendrite;
 
-void
-remove(
-    global struct clheap* heap,
-    global list* global * l,
-    global void* item
-) {
+typedef struct apical_dendrite {
 
-    global list* current = *l;
-    global list* global * prev_next_ptr = l;
+} apical_dendrite;
 
-    while (current != NULL && current->next != NULL) {
+typedef struct layer {
 
-        if (current->next->data == item) {
-            global list* to_remove = current->next;
-            current->next = to_remove->next;
-            free(heap, to_remove);
-        }
+} layer;
 
-        prev_next_ptr = &current->next;
-        current = current->next;
-    }
+typedef struct layer_connection {
 
-}
+} layer_connection;
+
+typedef struct htm_config {
+
+} htm_config;
+
+typedef struct htm {
+
+} htm;
 
 
-void
-append(
-    global struct clheap* heap,
-    global list * l,
-    global void* item
-) {
-
-    global list* current = l->next;
-    global list* global* ptr_to_current = &l->next;
-
-    while (current != NULL) {
-        ptr_to_current = &current->next;
-        current = current->next;
-    }
-
-    *ptr_to_current = new_node(heap, NULL, item);
-}
-
-void
-insert_at(
-    global struct clheap* heap,
-    global list* global* l,
-    global void* item,
-    unsigned int position
-) {
-
-    global list* current = *l;
-    global list* global* ptr_to_current = l;
-
-    unsigned int i;
-
-    for (i = 0; i < position && current != NULL; i++) {
-        ptr_to_current = &current->next;
-        current = current->next;
-    }
-
-    if (i == position) {
-        *ptr_to_current = new_node(heap, *ptr_to_current, item);
-    }
-
-}
+/**********************************************************************************************************************/
+/********************************************** NEURON RELATED FUNCTIONS **********************************************/
 
 
-unsigned int
-len(global list* l) {
-    unsigned int length = 0;
+global basal_dendrite*
+best_segment(global neuron* n) {
 
-    while (l != NULL) {
-        length++;
-        l = l->next;
-    }
-
-    return length;
-}
+};
 
 
-global list*
-pop_left(global list* global* l) {
-
-    global list* node = *l;
-
-    l = &node->next;
-
-    return node;
-
-}
-
-
-global list*
-pop_right(global list* global* l) {
-
-    global list* current = *l;
-    global list* global* ptr_to_current = l;
-
-    while (current != NULL && current->next != NULL) {
-
-        ptr_to_current = &current->next;
-        current = current->next;
-
-    }
-
-    *ptr_to_current = NULL;
-
-    return current;
-
-}
+/**********************************************************************************************************************/
+/****************************************** BASAL DENDRITE RELATED FUNCTIONS ******************************************/
 
 
 void
-free_list(global struct clheap *heap, global list* global *l) {
-    global list* next = *l;
-
-    while (next != NULL) {
-        free(heap, next->data);
-        global list* temp = next->next;
-        free(heap, next);
-        next = temp;
-    }
-
-    *l = NULL;
+basal_dendrite_step(global basal_dendrite* d) {
+    d->was_active = d->active;
+    d->active = false;
+    d->was_learning = d->learning;
+    d->learning = false;
+    d->sequence = false;
 }
 
 
-void
-free_local_list(global struct clheap *heap, global list** l) {
-    global list* next = *l;
 
-    while (next != NULL) {
-        free(heap, next->data);
-        global list* temp = next->next;
-        free(heap, next);
-        next = temp;
-    }
 
-    *l = NULL;
-}
+
 
 
 kernel void
@@ -202,6 +99,7 @@ typedef struct vec2 {
     unsigned int x, y;
     global volatile unsigned int* xs;
 } vec2;
+
 
 kernel void
 test_allocations(global struct clheap* heap, global int* results) {
@@ -224,6 +122,7 @@ test_allocations(global struct clheap* heap, global int* results) {
 
     }
 }
+
 
 kernel void
 test_list_allocations(global struct clheap* heap, global int* results) {
@@ -261,7 +160,5 @@ kernel void
 do_nothing(global struct clheap* heap) {
 
 }
-
-#endif
 
 
