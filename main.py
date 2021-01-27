@@ -45,7 +45,7 @@ def main():
     ARRAY_SIZE = 10
     REPEATS_NUMBER = 100
 
-    results = np.array([0] * ARRAY_SIZE, dtype=np.uint64)
+    results = np.array([0] * ARRAY_SIZE, dtype=np.int32)
     results_b = cl.Buffer(ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, hostbuf=results)
 
     def do_nothing_exec():

@@ -78,12 +78,12 @@ remove(
 void
 append(
     global struct clheap* heap,
-    global list * global * l,
+    global list * l,
     global void* item
 ) {
 
-    global list* current = *l;
-    global list* global* ptr_to_current = l;
+    global list* current = l->next;
+    global list* global* ptr_to_current = &l->next;
 
     while (current != NULL) {
         ptr_to_current = &current->next;
@@ -226,7 +226,7 @@ test_allocations(global struct clheap* heap, global int* results) {
 }
 
 kernel void
-test_list_allocations(global struct clheap* heap, global unsigned long* results) {
+test_list_allocations(global struct clheap* heap, global int* results) {
 
     unsigned int id = get_global_id(0);
 
@@ -234,19 +234,21 @@ test_list_allocations(global struct clheap* heap, global unsigned long* results)
 
         global list* l = new_node(heap, NULL, NULL);
 
-        l->data = malloc(heap, sizeof(unsigned int));
-        *(global unsigned int*)l->data = id;
-
-        global list* current = l;
+        l->data = malloc(heap, sizeof(int));
+        *((global int*)l->data) = id;
 
         for (unsigned int i = 0; i < 9; i++) {
-            append(heap, l, l->data);
+            global int* data = (global int*) malloc(heap, sizeof(int));
+            *data = id;
+            append(heap, l, data);
         }
 
         results[id] = 0;
 
-        while (current != NULL) {
-            results[id] += *(global unsigned int*)current->data;
+        global list* current = l;
+
+        while (current != NULL && current->data != NULL) {
+            results[id] += *((global int*)current->data);
             current = current->next;
         }
 
