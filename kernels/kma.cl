@@ -158,7 +158,8 @@ struct kma_sb {
 					  or build a container_of()*/
 	volatile unsigned int state; 	/**< Slots, slots free */
 	unsigned int size;		/**< Size of a block */
-	char data[KMA_SB_SIZE - 8 - sizeof(clIndexedQueue_item)];	/**< Rest of the header */
+	unsigned int padding;
+	char data[KMA_SB_SIZE - 12 - sizeof(clIndexedQueue_item)];	/**< Rest of the header */
 };
 
 /* This heap administration will take up 1 superblock */
@@ -729,7 +730,7 @@ free(__global struct clheap *heap, uintptr_t block)
 
 	/* Index of this block */
 	block -= (uintptr_t) sb;
-	block -= (8 + sizeof(clIndexedQueue_item));
+	block -= (12 + sizeof(clIndexedQueue_item));
 	block /= size;
 
 	/* Update the "taken" bit

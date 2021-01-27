@@ -33,7 +33,7 @@ typedef struct synapse {
 } synapse;
 
 typedef struct basal_dendrite {
-
+    bool learning, was_learning, active, was_active, sequence;
 } basal_dendrite;
 
 typedef struct proximal_dendrite {
