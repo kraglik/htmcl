@@ -1,5 +1,8 @@
+typedef unsigned long random_seed;
+
+
 unsigned int
-next_uint32(global unsigned long* random) {
+next_uint32(global random_seed* random) {
 
     unsigned int id = get_global_id(0);
 
@@ -14,7 +17,7 @@ next_uint32(global unsigned long* random) {
 }
 
 unsigned long
-next_uint64(global unsigned long* random) {
+next_uint64(global random_seed* random) {
     unsigned int id = get_global_id(0);
 
     unsigned long seed = random[id];
@@ -26,7 +29,7 @@ next_uint64(global unsigned long* random) {
 }
 
 int
-next_int32(global unsigned long* random) {
+next_int32(global random_seed* random) {
     unsigned int id = get_global_id(0);
 
     unsigned long seed = random[id];
@@ -40,7 +43,7 @@ next_int32(global unsigned long* random) {
 }
 
 long
-next_int64(global unsigned long* random) {
+next_int64(global random_seed* random) {
     unsigned int id = get_global_id(0);
 
     unsigned long seed = random[id];
@@ -54,7 +57,7 @@ next_int64(global unsigned long* random) {
 }
 
 float
-next_f32(global unsigned long* random) {
+next_f32(global random_seed* random) {
     unsigned int id = get_global_id(0);
     unsigned int x = next_int32(random);
 
@@ -63,6 +66,6 @@ next_f32(global unsigned long* random) {
 
 
 kernel void
-test_random(global unsigned long* random, global float* result) {
+test_random(global random_seed* random, global float* result) {
     result[get_global_id(0)] = next_f32(random);
 }
