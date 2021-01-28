@@ -41,7 +41,7 @@ next_int32(global unsigned long* random) {
 
 long
 next_int64(global unsigned long* random) {
-unsigned int id = get_global_id(0);
+    unsigned int id = get_global_id(0);
 
     unsigned long seed = random[id];
 
@@ -55,7 +55,7 @@ unsigned int id = get_global_id(0);
 
 float
 next_f32(global unsigned long* random) {
-unsigned int id = get_global_id(0);
+    unsigned int id = get_global_id(0);
     unsigned int x = next_int32(random);
 
     return (float)x / 4294967295.0;
