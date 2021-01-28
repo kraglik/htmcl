@@ -179,3 +179,36 @@ free_local_list(global struct clheap *heap, global list** l) {
 
     *l = NULL;
 }
+
+
+kernel void
+test_list_allocations(global struct clheap* heap, global int* results) {
+
+    unsigned int id = get_global_id(0);
+
+    for (unsigned int i = 0; i < 128; i++) {
+
+        global list* l = new_node(heap, NULL, NULL);
+
+        l->data = malloc(heap, sizeof(int));
+        *((global int*)l->data) = id;
+
+        for (unsigned int i = 0; i < 9; i++) {
+            global int* data = (global int*) malloc(heap, sizeof(int));
+            *data = id;
+            append(heap, l, data);
+        }
+
+        results[id] = 0;
+
+        global list* current = l;
+
+        while (current != NULL && current->data != NULL) {
+            results[id] += *((global int*)current->data);
+            current = current->next;
+        }
+
+        free_local_list(heap, &l);
+
+    }
+}

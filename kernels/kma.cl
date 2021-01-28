@@ -949,3 +949,38 @@ kma_test_malloc_highvar(struct clheap __global *heap, unsigned int iters)
 //	}
 //}
 //#endif
+
+
+
+kernel void
+get_clheap_size(global unsigned int* out) {
+    out[0] = sizeof(struct clheap);
+}
+
+typedef struct vec2 {
+    unsigned int x, y;
+    global volatile unsigned int* xs;
+} vec2;
+
+
+kernel void
+test_allocations(global struct clheap* heap, global int* results) {
+
+    unsigned int id = get_global_id(0);
+
+    for (unsigned int i = 0; i < 128; i++) {
+
+        global vec2* vec = (global vec2*) malloc(heap, sizeof(vec2));
+
+
+        vec->x = id;
+        vec->y = id + id;
+        vec->xs = (global unsigned int*)malloc(heap, sizeof(unsigned int));
+
+        results[id] = vec->x - vec->y;
+
+        free(heap, vec->xs);
+        free(heap, vec);
+
+    }
+}
