@@ -40,7 +40,7 @@ def build_ctx_queue_prg():
 def main():
     ctx, queue, prg = build_ctx_queue_prg()
 
-    heap = kma.build_kma(ctx, queue, prg, 1)
+    heap = kma.build_kma(ctx, queue, prg, 32)
 
     test_allocations = prg.test_allocations
     test_list_allocations = prg.test_list_allocations
@@ -49,7 +49,7 @@ def main():
 
     mf = cl.mem_flags
 
-    ARRAY_SIZE = 1024
+    ARRAY_SIZE = 1664 * 4
     REPEATS_NUMBER = 1000
 
     results = np.array([0] * ARRAY_SIZE, dtype=np.int32)
@@ -125,8 +125,8 @@ def main():
     # test_allocation_speed()
 
     test_random_speed()
-    test_randoms()
-    print(random_floats)
+    # test_randoms()
+    # print(random_floats)
 
     test_list_allocations(queue, results.shape, (1, ), heap, results_b).wait()
 
