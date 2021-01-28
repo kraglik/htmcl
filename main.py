@@ -68,6 +68,10 @@ def main():
         test_allocations(queue, results.shape, (1, ), heap, results_b).wait()
         queue.finish()
 
+    def test_random_exec():
+        test_random(queue, randoms.shape, None, randoms_b, random_floats_b)
+        queue.finish()
+
     def test_randoms():
         avg, low, high = 0, 0, 0
 
@@ -81,7 +85,7 @@ def main():
             low = min(low, np.min(random_floats))
             high = max(high, np.max(random_floats))
 
-        print(avg, low, high)
+        print(f"average: {avg}, high: {high}, low: {low}")
 
         queue.finish()
 
@@ -91,7 +95,7 @@ def main():
             number=REPEATS_NUMBER
         )
         seconds_spent_total = timeit.timeit(
-            lambda: test_random(queue, randoms.shape, None, randoms_b, random_floats_b).wait(),
+            test_random_exec,
             number=REPEATS_NUMBER
         )
         randoms_per_second = int(
@@ -99,7 +103,7 @@ def main():
             (seconds_spent_total - seconds_spent_doing_nothing)
         ) * 128
 
-        print(f"{randoms_per_second} random numbers second")
+        print(f"{randoms_per_second} random numbers per second")
 
     def test_allocation_speed():
         seconds_spent_doing_nothing = timeit.timeit(
