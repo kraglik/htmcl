@@ -67,5 +67,7 @@ next_f32(global random_seed* random) {
 
 kernel void
 test_random(global random_seed* random, global float* result) {
-    result[get_global_id(0)] = next_f32(random);
+    for (unsigned int i = 0; i < 128; i++) {
+        result[get_global_id(0)] = next_f32(random);
+    }
 }

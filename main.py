@@ -49,8 +49,8 @@ def main():
 
     mf = cl.mem_flags
 
-    ARRAY_SIZE = 5
-    REPEATS_NUMBER = 100
+    ARRAY_SIZE = 1024
+    REPEATS_NUMBER = 1000
 
     results = np.array([0] * ARRAY_SIZE, dtype=np.int32)
     randoms = np.random.randint(low=0, high=9223372036854775806, size=ARRAY_SIZE, dtype=np.uint64)
@@ -69,9 +69,37 @@ def main():
         queue.finish()
 
     def test_randoms():
-        test_random(queue, randoms.shape, (1, ), randoms_b, random_floats_b)
-        cl.enqueue_copy(queue, random_floats, random_floats_b)
+        avg, low, high = 0, 0, 0
+
+        N_ITERS = 1_000
+
+        for i in range(N_ITERS):
+            test_random(queue, randoms.shape, (1, ), randoms_b, random_floats_b)
+            cl.enqueue_copy(queue, random_floats, random_floats_b)
+
+            avg += (sum(random_floats) / ARRAY_SIZE) / N_ITERS
+            low = min(low, np.min(random_floats))
+            high = max(high, np.max(random_floats))
+
+        print(avg, low, high)
+
         queue.finish()
+
+    def test_random_speed():
+        seconds_spent_doing_nothing = timeit.timeit(
+            do_nothing_exec,
+            number=REPEATS_NUMBER
+        )
+        seconds_spent_total = timeit.timeit(
+            lambda: test_random(queue, randoms.shape, None, randoms_b, random_floats_b).wait(),
+            number=REPEATS_NUMBER
+        )
+        randoms_per_second = int(
+            ARRAY_SIZE * REPEATS_NUMBER /
+            (seconds_spent_total - seconds_spent_doing_nothing)
+        ) * 128
+
+        print(f"{randoms_per_second} random numbers second")
 
     def test_allocation_speed():
         seconds_spent_doing_nothing = timeit.timeit(
@@ -92,6 +120,7 @@ def main():
 
     # test_allocation_speed()
 
+    test_random_speed()
     test_randoms()
     print(random_floats)
 
