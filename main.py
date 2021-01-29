@@ -45,9 +45,13 @@ def build_ctx_queue_prg():
         'network.cl'
     ]
 
-    prg_text += read_kernels(['kernels'], kernels)
+    main_kernels = [
+        'utils.cl'
+    ]
+
+    prg_text += read_kernels(['kernels', 'utils'], kernels)
     prg_text += read_kernels(['kernels', 'htm'], htm_kernels)
-    prg_text += read_kernels(['kernels'], ['utils.cl'])
+    prg_text += read_kernels(['kernels', 'utils'], main_kernels)
 
     with open('debug.cl', 'w') as f:
         f.write(prg_text)
