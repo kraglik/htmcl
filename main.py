@@ -90,17 +90,17 @@ def main():
         queue.finish()
 
     def test_random_speed():
-        seconds_spent_doing_nothing = timeit.timeit(
-            do_nothing_exec,
-            number=REPEATS_NUMBER
-        )
+        # seconds_spent_doing_nothing = timeit.timeit(
+        #     do_nothing_exec,
+        #     number=REPEATS_NUMBER
+        # )
         seconds_spent_total = timeit.timeit(
             test_random_exec,
             number=REPEATS_NUMBER
         )
         randoms_per_second = int(
             ARRAY_SIZE * REPEATS_NUMBER /
-            (seconds_spent_total - seconds_spent_doing_nothing)
+            seconds_spent_total
         ) * 128
 
         print(f"{randoms_per_second} random numbers per second")

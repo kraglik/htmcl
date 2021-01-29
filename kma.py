@@ -8,7 +8,7 @@ CL_HEAP_SIZE_BYTES = 120
 
 def build_kma(ctx, queue, prg, heap_size_mbytes) -> cl.Buffer:
     clheap_init = prg.clheap_init
-    n_blocks = (heap_size_mbytes * 1024 * 1024 - CL_HEAP_SIZE_BYTES) // BLOCK_SIZE_BYTES
+    n_blocks = (int(heap_size_mbytes * 1024 * 1024) - CL_HEAP_SIZE_BYTES) // BLOCK_SIZE_BYTES
     n_bytes = n_blocks * BLOCK_SIZE_BYTES + CL_HEAP_SIZE_BYTES
 
     mf = cl.mem_flags

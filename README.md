@@ -7,7 +7,7 @@ TODO List:
     - [x] Test it (something near 6 millions malloc calls per second)
     - [x] Fix that bug with code failing on Nvidia GPU. It was caused by wrong objects alignment in memory in case of 64-bit GPU.
 - [x] Implement random
-    - [x] Test it (10 billions of random numbers per second on my gpu)
+    - [x] Test it (34.5 billions of random numbers per second on my gpu, kernel launch time included)
 - [x] Implement generic list
     - [ ] Test it
 - [ ] Implement input layer
