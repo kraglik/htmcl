@@ -1,6 +1,7 @@
 struct cell;
 struct column;
 struct synapse;
+struct proximal_synapse;
 struct dendrite;
 struct apical_dendrite;
 struct layer;

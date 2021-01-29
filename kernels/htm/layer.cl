@@ -38,10 +38,17 @@ typedef struct layer {
     bool learning;
     char __learning_padding[7];
 
-    global cell* cells;
-    global column* columns;
+    global struct cell* cells;
+    global struct column* columns;
+    global struct proximal_dendrite* proximal_dendrites;
 
-    global sdr* sdr;
+    global struct sdr* sdr;
 
 } layer;
+
+
+kernel void
+prepare_layer(global layer* l) {
+
+}
 

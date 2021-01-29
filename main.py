@@ -37,12 +37,13 @@ def build_ctx_queue_prg():
 
     htm_kernels = [
         'htm_declarations.cl',
+        'layer.cl',
+        'layer_connection.cl',
         'sdr.cl',
         'synapse.cl',
         'dendrite.cl',
         'cell.cl',
         'column.cl',
-        'layer.cl',
         'network.cl'
     ]
 
