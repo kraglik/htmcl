@@ -1,0 +1,10 @@
+struct cell;
+struct column;
+struct synapse;
+struct dendrite;
+struct apical_dendrite;
+struct layer;
+struct layer_connection;
+struct htm_config;
+struct htm;
+struct sdr;

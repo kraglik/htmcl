@@ -7,26 +7,47 @@ import pyopencl as cl
 
 import kma
 
+MAX_U64 = 9223372036854775806
+
+
+def read_kernels(path, filenames):
+    current_dir = pathlib.Path(__file__).parent.absolute()
+    text = ''
+
+    for file_name in filenames:
+        with open(os.path.join(current_dir, *path, file_name), 'r') as f:
+            cl_file = f.read()
+            text += cl_file
+
+    return text
+
 
 def build_ctx_queue_prg():
     ctx = cl.create_some_context()
     queue = cl.CommandQueue(ctx)
-
-    current_dir = pathlib.Path(__file__).parent.absolute()
 
     prg_text = ""
 
     kernels = [
         'kma.cl',
         'random.cl',
-        'list.cl',
-        'htm.cl'
+        'list.cl'
     ]
 
-    for file_name in kernels:
-        with open(os.path.join(current_dir, 'kernels', file_name), 'r') as f:
-            cl_file = f.read()
-            prg_text += cl_file
+    htm_kernels = [
+        'htm_declarations.cl',
+        'sdr.cl',
+        'synapse.cl',
+        'dendrite.cl',
+        'cell.cl',
+        'column.cl',
+        'layer.cl',
+        'network.cl'
+    ]
+
+    prg_text += read_kernels(['kernels'], kernels)
+    prg_text += read_kernels(['kernels', 'htm'], htm_kernels)
+    prg_text += read_kernels(['kernels'], ['utils.cl'])
 
     with open('debug.cl', 'w') as f:
         f.write(prg_text)
@@ -50,10 +71,10 @@ def main():
     mf = cl.mem_flags
 
     ARRAY_SIZE = 1664 * 4
-    REPEATS_NUMBER = 1000
+    REPEATS_NUMBER = 10000
 
     results = np.array([0] * ARRAY_SIZE, dtype=np.int32)
-    randoms = np.random.randint(low=0, high=9223372036854775806, size=ARRAY_SIZE, dtype=np.uint64)
+    randoms = np.random.randint(low=0, high=MAX_U64, size=ARRAY_SIZE, dtype=np.uint64)
     random_floats = np.array([0] * ARRAY_SIZE, dtype=np.float32)
 
     results_b = cl.Buffer(ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, hostbuf=results)
@@ -122,19 +143,17 @@ def main():
 
         print(f"{alloc_per_second} allocations per second")
 
-    # test_allocation_speed()
+    def test_lists():
+        test_list_allocations(queue, results.shape, (1,), heap, results_b).wait()
+
+        cl.enqueue_copy(queue, results, results_b)
+        print(results)
+
+        assert all(x == y for x, y in zip(results, list(range(0, ARRAY_SIZE * 10, 10)))), "Kernel returned wrong result"
+        print("Kernel allocations are OK")
 
     test_random_speed()
-    # test_randoms()
-    # print(random_floats)
-
-    test_list_allocations(queue, results.shape, (1, ), heap, results_b).wait()
-
-    cl.enqueue_copy(queue, results, results_b)
-    print(results)
-
-    assert all(x == y for x, y in zip(results, list(range(0, ARRAY_SIZE * 10, 10)))), "Kernel returned wrong result"
-    print("Kernel allocations are OK")
+    # test_lists()
 
 
 if __name__ == '__main__':
