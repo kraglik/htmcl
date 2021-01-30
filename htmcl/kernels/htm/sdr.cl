@@ -3,6 +3,7 @@ typedef struct sdr {
 
     unsigned int n_dims;   // Number of dimensions that represents structure of given SDR
     unsigned int dims[3];  // Unused dimensions are equal to 1
+    unsigned long size;
 
     bool state[];  // Bool array of size (dims[0] * dims[1] * dims[2])
                    // Since it will be accessed simultaneously by multiple threads,
@@ -30,9 +31,12 @@ init_sdr(global sdr* sdr,
          unsigned int n_dims) {
 
     sdr->n_dims = n_dims;
-    sdr->dims[0] = size_x;
-    sdr->dims[1] = size_y;
-    sdr->dims[2] = size_z;
+
+    sdr->dims[0] = max(size_x, 1);
+    sdr->dims[1] = max(size_y, 1);
+    sdr->dims[2] = max(size_z, 1);
+
+    sdr->size = max(size_x, 1) * max(size_y, 1) * max(size_z, 1);
 
     for (unsigned int i = 0; i < (size_x * size_y * size_z); i++) {
         sdr->state[i] = false;
