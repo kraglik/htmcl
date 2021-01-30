@@ -32,11 +32,11 @@ init_sdr(global sdr* sdr,
 
     sdr->n_dims = n_dims;
 
-    sdr->dims[0] = max(size_x, 1);
-    sdr->dims[1] = max(size_y, 1);
-    sdr->dims[2] = max(size_z, 1);
+    sdr->dims[0] = max(size_x, 1U);
+    sdr->dims[1] = max(size_y, 1U);
+    sdr->dims[2] = max(size_z, 1U);
 
-    sdr->size = max(size_x, 1) * max(size_y, 1) * max(size_z, 1);
+    sdr->size = max(size_x, 1U) * max(size_y, 1U) * max(size_z, 1U);
 
     for (unsigned int i = 0; i < (size_x * size_y * size_z); i++) {
         sdr->state[i] = false;
