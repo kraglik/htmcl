@@ -24,7 +24,9 @@ class CLContext:
         'dendrite.cl',
         'cell.cl',
         'column.cl',
-        'network.cl'
+        'network.cl',
+        'spatial_pooler.cl',
+        'temporal_pooler.cl'
     ]
 
     MAIN_KERNELS = [
