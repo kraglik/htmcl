@@ -15,4 +15,5 @@ TODO List:
 - [ ] Implement temporal pooler
 - [ ] Implement classifier
 - [ ] Implement multi-layer architecture
+- [ ] Write a proper documentation
 
