@@ -13,6 +13,12 @@ typedef struct cell {
 } cell;
 
 
+kernel void
+get_cell_size_bytes(global unsigned int* result) {
+    result[0] = sizeof(cell);
+}
+
+
 global dendrite*
 best_segment(global cell* n) {
 

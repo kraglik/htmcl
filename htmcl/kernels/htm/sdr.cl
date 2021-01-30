@@ -11,6 +11,36 @@ typedef struct sdr {
 } sdr;
 
 
+kernel void
+get_sdr_size_bytes(global unsigned int* result,
+                   unsigned int size_x,
+                   unsigned int size_y,
+                   unsigned int size_z) {
+
+    result[0] = sizeof(sdr) + sizeof(bool) * size_x * size_y * size_z;
+
+}
+
+
+kernel void
+init_sdr(global sdr* sdr,
+         unsigned int size_x,
+         unsigned int size_y,
+         unsigned int size_z,
+         unsigned int n_dims) {
+
+    sdr->n_dims = n_dims;
+    sdr->dims[0] = size_x;
+    sdr->dims[1] = size_y;
+    sdr->dims[2] = size_z;
+
+    for (unsigned int i = 0; i < (size_x * size_y * size_z); i++) {
+        sdr->state[i] = false;
+    }
+
+}
+
+
 bool
 get_value_1d(global sdr* s, unsigned int position) {
     return s->state[position];

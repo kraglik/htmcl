@@ -16,6 +16,12 @@ typedef struct column {
 
 
 kernel void
+get_column_size_bytes(global unsigned int* result) {
+    result[0] = sizeof(column);
+}
+
+
+kernel void
 spatial_pooler_phase_1(global struct layer* l) {
 
     unsigned long column_id = get_global_id(0);

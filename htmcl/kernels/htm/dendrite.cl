@@ -10,7 +10,7 @@ typedef struct dendrite {
 
 
 void
-basal_dendrite_step(global dendrite* d) {
+distal_dendrite_step(global dendrite* d) {
     d->was_active = d->active;
     d->active = false;
     d->was_learning = d->learning;

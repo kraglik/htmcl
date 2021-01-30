@@ -16,6 +16,7 @@ next_uint32(global random_seed* random) {
     return result;
 }
 
+
 unsigned long
 next_uint64(global random_seed* random) {
     unsigned int id = get_global_id(0);
@@ -27,6 +28,7 @@ next_uint64(global random_seed* random) {
 
     return seed;
 }
+
 
 int
 next_int32(global random_seed* random) {
@@ -42,6 +44,7 @@ next_int32(global random_seed* random) {
     return result;
 }
 
+
 long
 next_int64(global random_seed* random) {
     unsigned int id = get_global_id(0);
@@ -55,6 +58,7 @@ next_int64(global random_seed* random) {
 
     return result;
 }
+
 
 float
 next_f32(global random_seed* random) {
