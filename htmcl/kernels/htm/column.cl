@@ -1,5 +1,8 @@
 typedef struct column {
 
+    unsigned int x, y;
+    unsigned long id;
+
     global struct cell* cell;
     global list* synapses;
 
