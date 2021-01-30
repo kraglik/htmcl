@@ -65,13 +65,12 @@ class CLContext:
                 f.write(self.prg_text)
 
     def prepare_heap(self, heap_size_mbytes: t.Union[float, int]) -> cl.Buffer:
-        clheap_init = self.prg.clheap_init
         n_blocks = (int(heap_size_mbytes * 1024 * 1024) - self.CL_HEAP_SIZE_BYTES) // self.BLOCK_SIZE_BYTES
         n_bytes = n_blocks * self.BLOCK_SIZE_BYTES + self.CL_HEAP_SIZE_BYTES
 
         self.heap = cl.Buffer(self.ctx, self.mf.READ_WRITE, size=n_bytes)
 
-        clheap_init(self.queue, (1,), None, self.heap, np.uint64(n_bytes))
+        self.run_unit_kernel(self.prg.clheap_init, self.heap, np.uint64(n_bytes))
 
         return self.heap
 
@@ -97,6 +96,10 @@ class CLContext:
             self.mf.READ_WRITE,
             size=size_bytes
         )
+
+    def run_unit_kernel(self, kernel, *args):
+        kernel(self.queue, (1, ), None, *args)
+        self.queue.finish()
 
     def run_test(self):
         self.prepare_heap(32)

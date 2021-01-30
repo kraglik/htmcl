@@ -26,14 +26,61 @@ class Layer:
             self._columns_buffer = None
 
         else:
-            self._cells_buffer = self.ocl.make_buffer(size_bytes=self._get_cells_buffer_size())
-            self._columns_buffer = self.ocl.make_buffer(size_bytes=self._get_columns_buffer_size())
+            self._cells_buffer = self.ocl.make_buffer(self._get_cells_buffer_size())
+            self._columns_buffer = self.ocl.make_buffer(self._get_columns_buffer_size())
 
         self._sdr = SDR(
             ocl,
             config.layer_size_x,
             config.layer_size_y,
             config.cells_per_column
+        )
+        self._prepare_buffers()
+        self._prepare_coefficients()
+
+    def _prepare_buffers(self):
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.prepare_layer_buffers,
+            self._buffer,
+            self._cells_buffer,
+            self._columns_buffer,
+            self._sdr.buffer()
+        )
+
+    def _prepare_coefficients(self):
+        self._prepare_primary_coefficients()
+        self._prepare_boost_coefficients()
+        self._prepare_segment_coefficients()
+
+    def _prepare_primary_coefficients(self):
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.prepare_layer_primary_coefficients,
+            self._buffer,
+            np.uint32(self.config.layer_size_x),
+            np.uint32(self.config.layer_size_y),
+            np.uint32(self.config.cells_per_column),
+            np.uint32(self.config.learning)
+        )
+
+    def _prepare_boost_coefficients(self):
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.prepare_layer_boost_coefficients,
+            self._buffer,
+            np.float32(self.config.boost_increase),
+            np.float32(self.config.boost_decrease),
+            np.float32(self.config.boost_strength),
+        )
+
+    def _prepare_segment_coefficients(self):
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.prepare_layer_segment_coefficients,
+            self._buffer,
+            np.uint32(self.config.segment_activation_threshold),
+            np.uint32(self.config.segment_minimal_threshold),
+            np.uint32(self.config.initial_synapses_per_apical_segment),
+            np.uint32(self.config.initial_synapses_per_distal_segment),
+            np.uint32(self.config.apical_segments_per_cell),
+            np.uint32(self.config.distal_segments_per_cell)
         )
 
     def _get_layer_size_bytes(self) -> int:
@@ -70,5 +117,3 @@ class Layer:
 
     def cell_struct_size(self) -> int:
         return self._cell_struct_size
-
-

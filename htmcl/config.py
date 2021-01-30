@@ -18,6 +18,9 @@ class LayerConfig:
     max_new_distal_synapses: int = 4
     max_new_apical_synapses: int = 4
 
+    initial_synapses_per_distal_segment: int = 5
+    initial_synapses_per_apical_segment: int = 5
+
     segment_activation_threshold: int = 15
     segment_minimal_threshold: int = 10
 

@@ -8,9 +8,9 @@ def main():
     # ctx.run_test()
 
     layer = Layer(ctx, LayerConfig())
-    print("layer on-GPU struct size is", layer.layer_struct_size())
-    print("column on-GPU struct size is", layer.column_struct_size())
-    print("cell on-GPU struct size is", layer.cell_struct_size())
+    print("layer on-GPU struct size is", layer.layer_struct_size(), "bytes")
+    print("column on-GPU struct size is", layer.column_struct_size(), "bytes")
+    print("cell on-GPU struct size is", layer.cell_struct_size(), "bytes")
 
 
 if __name__ == '__main__':

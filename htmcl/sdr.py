@@ -22,19 +22,15 @@ class SDR:
         self._init_sdr()
 
     def _get_sdr_size_bytes(self):
-        get_sdr_size_bytes = self.ocl.prg.get_sdr_size_bytes
-
         result_b = cl.Buffer(self.ocl.ctx, self.ocl.mf.READ_WRITE, size=8)
         result = np.array([0], dtype=np.uint64)
 
-        get_sdr_size_bytes(
-            self.ocl.queue,
-            result.shape,
-            None,
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.get_sdr_size_bytes,
             result_b,
             np.uint32(self.shape[0]),
             np.uint32(self.shape[1]),
-            np.uint32(self.shape[2]),
+            np.uint32(self.shape[2])
         )
         cl.enqueue_copy(self.ocl.queue, result, result_b)
         self.ocl.queue.finish()
@@ -45,15 +41,15 @@ class SDR:
         return self._sdr_struct_size
 
     def _init_sdr(self):
-        init_sdr = self.ocl.prg.init_sdr
-        init_sdr(
-            self.ocl.queue,
-            (1, ),
-            None,
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.init_sdr,
             self._buffer,
             np.uint32(self.shape[0]),
             np.uint32(self.shape[1]),
             np.uint32(self.shape[2]),
             np.uint32(self.n_dims)
         )
+
+    def buffer(self):
+        return self._buffer
 
