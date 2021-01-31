@@ -3,8 +3,8 @@ typedef struct column {
     unsigned int x, y;
     unsigned long id;
 
-    global struct cell* cell;
-    global list* synapses;
+    global cell* cells;
+    global list* segments;
 
     float overlap_min;
     float overlap;

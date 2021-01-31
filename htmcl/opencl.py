@@ -18,6 +18,8 @@ class CLContext:
     HTM_KERNELS = [
         'htm_declarations.cl',
         'layer.cl',
+        'proximal_dendrite.cl',
+        'proximal_synapse.cl',
         'layer_connection.cl',
         'sdr.cl',
         'synapse.cl',
@@ -25,6 +27,8 @@ class CLContext:
         'cell.cl',
         'column.cl',
         'network.cl',
+        'connection_routines.cl',
+        'layer_preparation_routines.cl',
         'spatial_pooler.cl',
         'temporal_pooler.cl'
     ]
@@ -68,7 +72,7 @@ class CLContext:
         self.prg = cl.Program(self.ctx, self.prg_text)
         self.prg.build()
         self.heap = self.prepare_heap(self.heap_size_megabytes)
-        self.randoms = None
+        self.randoms = self.create_random_seed_buffer(512_000)
 
         if self.debug:
             with open('debug.cl', 'w') as f:

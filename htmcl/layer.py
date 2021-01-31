@@ -16,11 +16,7 @@ class Layer:
         self._cell_struct_size = self._get_cell_size_bytes()
         self._column_struct_size = self._get_column_size_bytes()
 
-        self._buffer = cl.Buffer(
-            self._ocl.ctx,
-            self._ocl.mf.READ_WRITE,
-            size=self._layer_struct_size
-        )
+        self._buffer = self._ocl.make_buffer(self._layer_struct_size)
 
         if self.config.input_layer:
             self._cells_buffer = None
@@ -36,8 +32,12 @@ class Layer:
             config.layer_size_y,
             config.cells_per_column
         )
+
         self._prepare_buffers()
-        self._prepare_coefficients()
+
+        if not self.config.input_layer:
+            self._prepare_coefficients()
+            self._prepare_layer()
 
     def _prepare_buffers(self):
         self._ocl.run_unit_kernel(
@@ -52,6 +52,9 @@ class Layer:
         self._prepare_primary_coefficients()
         self._prepare_boost_coefficients()
         self._prepare_segment_coefficients()
+
+    def _prepare_layer(self):
+        self._prepare_layer_columns()
 
     def _prepare_primary_coefficients(self):
         self._ocl.run_unit_kernel(
@@ -84,6 +87,15 @@ class Layer:
             np.uint32(self.config.apical_segments_per_cell),
             np.uint32(self.config.distal_segments_per_cell)
         )
+
+    def _prepare_layer_columns(self):
+        self._ocl.prg.prepare_layer_columns(
+            self._ocl.queue,
+            (int(self.config.layer_size_x * self.config.layer_size_y), ),
+            (1, ),
+            self._buffer
+        )
+        self._ocl.queue.finish()
 
     def _get_layer_size_bytes(self) -> int:
         return self._ocl.size_getter(getter=self._ocl.prg.get_layer_size_bytes)

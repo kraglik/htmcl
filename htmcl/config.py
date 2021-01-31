@@ -60,5 +60,4 @@ class LayerConfig:
 
 @dataclass
 class RandomConnectionConfig:
-    connection_probability: t.Optional[float] = None
-    connections_count: t.Optional[int] = None
+    connection_probability: float = 0.2

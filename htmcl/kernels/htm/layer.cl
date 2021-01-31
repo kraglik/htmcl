@@ -131,18 +131,12 @@ prepare_layer_segment_coefficients(
         unsigned int distal_segments_per_cell
 ) {
 
-    l->segment_activation_threshold = segment_activation_threshold;
-    l->segment_min_threshold = segment_min_threshold;
-    l->initial_synapses_per_distal_segment = initial_synapses_per_distal_segment;
-    l->initial_synapses_per_apical_segment = initial_synapses_per_apical_segment;
-    l->apical_segments_per_cell = apical_segments_per_cell;
-    l->distal_segments_per_cell = distal_segments_per_cell;
-
-}
-
-
-kernel void
-prepare_input_layer(global layer* l) {
+    l->segment_activation_threshold         = segment_activation_threshold;
+    l->segment_min_threshold                = segment_min_threshold;
+    l->initial_synapses_per_distal_segment  = initial_synapses_per_distal_segment;
+    l->initial_synapses_per_apical_segment  = initial_synapses_per_apical_segment;
+    l->apical_segments_per_cell             = apical_segments_per_cell;
+    l->distal_segments_per_cell             = distal_segments_per_cell;
 
 }
 

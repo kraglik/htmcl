@@ -2,15 +2,7 @@ typedef struct layer_connection {
 
     unsigned int input_layer_id;
     unsigned int target_layer_id;
-
-    unsigned int max_synapses_per_segment;
-    unsigned int radius;
-
-    float min_permanence;
-    float max_permanence;
-    float threshold_permanence;
-    float permanence_inc;
-    float permanence_dec;
+    global layer* layer;
 
 } layer_connection;
 
