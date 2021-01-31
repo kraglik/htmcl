@@ -7,8 +7,9 @@ from htmcl.sdr import SDR
 
 
 class Layer:
-    def __init__(self, ocl: CLContext, config: LayerConfig):
-        self.ocl = ocl
+    def __init__(self, ocl: CLContext, layer_id: int, config: LayerConfig):
+        self.id = layer_id
+        self._ocl = ocl
         self.config = config
 
         self._layer_struct_size = self._get_layer_size_bytes()
@@ -16,8 +17,8 @@ class Layer:
         self._column_struct_size = self._get_column_size_bytes()
 
         self._buffer = cl.Buffer(
-            self.ocl.ctx,
-            self.ocl.mf.READ_WRITE,
+            self._ocl.ctx,
+            self._ocl.mf.READ_WRITE,
             size=self._layer_struct_size
         )
 
@@ -26,8 +27,8 @@ class Layer:
             self._columns_buffer = None
 
         else:
-            self._cells_buffer = self.ocl.make_buffer(self._get_cells_buffer_size())
-            self._columns_buffer = self.ocl.make_buffer(self._get_columns_buffer_size())
+            self._cells_buffer = self._ocl.make_buffer(self._get_cells_buffer_size())
+            self._columns_buffer = self._ocl.make_buffer(self._get_columns_buffer_size())
 
         self._sdr = SDR(
             ocl,
@@ -39,8 +40,8 @@ class Layer:
         self._prepare_coefficients()
 
     def _prepare_buffers(self):
-        self.ocl.run_unit_kernel(
-            self.ocl.prg.prepare_layer_buffers,
+        self._ocl.run_unit_kernel(
+            self._ocl.prg.prepare_layer_buffers,
             self._buffer,
             self._cells_buffer,
             self._columns_buffer,
@@ -53,18 +54,19 @@ class Layer:
         self._prepare_segment_coefficients()
 
     def _prepare_primary_coefficients(self):
-        self.ocl.run_unit_kernel(
-            self.ocl.prg.prepare_layer_primary_coefficients,
+        self._ocl.run_unit_kernel(
+            self._ocl.prg.prepare_layer_primary_coefficients,
             self._buffer,
             np.uint32(self.config.layer_size_x),
             np.uint32(self.config.layer_size_y),
             np.uint32(self.config.cells_per_column),
-            np.uint32(self.config.learning)
+            np.uint32(self.config.learning),
+            np.uint32(self.id)
         )
 
     def _prepare_boost_coefficients(self):
-        self.ocl.run_unit_kernel(
-            self.ocl.prg.prepare_layer_boost_coefficients,
+        self._ocl.run_unit_kernel(
+            self._ocl.prg.prepare_layer_boost_coefficients,
             self._buffer,
             np.float32(self.config.boost_increase),
             np.float32(self.config.boost_decrease),
@@ -72,8 +74,8 @@ class Layer:
         )
 
     def _prepare_segment_coefficients(self):
-        self.ocl.run_unit_kernel(
-            self.ocl.prg.prepare_layer_segment_coefficients,
+        self._ocl.run_unit_kernel(
+            self._ocl.prg.prepare_layer_segment_coefficients,
             self._buffer,
             np.uint32(self.config.segment_activation_threshold),
             np.uint32(self.config.segment_minimal_threshold),
@@ -84,13 +86,13 @@ class Layer:
         )
 
     def _get_layer_size_bytes(self) -> int:
-        return self.ocl.size_getter(getter=self.ocl.prg.get_layer_size_bytes)
+        return self._ocl.size_getter(getter=self._ocl.prg.get_layer_size_bytes)
 
     def _get_column_size_bytes(self) -> int:
-        return self.ocl.size_getter(getter=self.ocl.prg.get_column_size_bytes)
+        return self._ocl.size_getter(getter=self._ocl.prg.get_column_size_bytes)
 
     def _get_cell_size_bytes(self) -> int:
-        return self.ocl.size_getter(getter=self.ocl.prg.get_cell_size_bytes)
+        return self._ocl.size_getter(getter=self._ocl.prg.get_cell_size_bytes)
 
     def _get_cells_buffer_size(self) -> int:
         return int(

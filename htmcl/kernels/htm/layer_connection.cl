@@ -1,8 +1,3 @@
-typedef enum input_layer_type {
-    HTM_LAYER, SDR_LAYER
-} input_layer_type;
-
-
 typedef struct layer_connection {
 
     unsigned int input_layer_id;
@@ -17,6 +12,13 @@ typedef struct layer_connection {
     float permanence_inc;
     float permanence_dec;
 
-    input_layer_type input_layer_type;
-
 } layer_connection;
+
+
+kernel void
+get_layer_connection_size_bytes(global unsigned int* result) {
+
+    result[0] = sizeof(layer_connection);
+
+}
+

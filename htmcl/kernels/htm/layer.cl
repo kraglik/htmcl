@@ -1,5 +1,7 @@
 typedef struct layer {
 
+    unsigned int id;
+
     unsigned int size_x;
     unsigned int size_y;
 
@@ -88,9 +90,11 @@ prepare_layer_primary_coefficients(
         unsigned int size_x,
         unsigned int size_y,
         unsigned int cells_per_column,
-        unsigned int learning
+        unsigned int learning,
+        unsigned int id
 ) {
 
+    l->id = id;
     l->size_x = size_x;
     l->size_y = size_y;
     l->cells_per_column = cells_per_column;

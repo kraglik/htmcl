@@ -1,3 +1,5 @@
+import typing as t
+
 from dataclasses import dataclass
 
 
@@ -54,3 +56,9 @@ class LayerConfig:
 
     learning: bool = True
     input_layer: bool = False
+
+
+@dataclass
+class RandomConnectionConfig:
+    connections_probability: t.Optional[float] = None
+    connections_count: t.Optional[int] = None

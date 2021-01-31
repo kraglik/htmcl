@@ -37,8 +37,16 @@ class CLContext:
     CL_HEAP_SIZE_BYTES = 120
     MAX_U64 = 9223372036854775806
 
-    def __init__(self, platform=None, device=None, interactive=True, debug=False):
+    def __init__(
+            self,
+            platform: t.Optional[int] = None,
+            device: t.Optional[int] = None,
+            interactive: bool = True,
+            debug: bool = False,
+            heap_size_megabytes: int = 256
+    ):
         self.debug = debug
+        self.heap_size_megabytes = heap_size_megabytes
 
         if platform is None or device is None:
             self.ctx = cl.create_some_context(interactive=interactive)
@@ -59,7 +67,7 @@ class CLContext:
 
         self.prg = cl.Program(self.ctx, self.prg_text)
         self.prg.build()
-        self.heap = None
+        self.heap = self.prepare_heap(self.heap_size_megabytes)
         self.randoms = None
 
         if self.debug:
@@ -96,7 +104,7 @@ class CLContext:
         return cl.Buffer(
             self.ctx,
             self.mf.READ_WRITE,
-            size=size_bytes
+            size=int(size_bytes)
         )
 
     def run_unit_kernel(self, kernel, *args):
@@ -104,14 +112,12 @@ class CLContext:
         self.queue.finish()
 
     def run_test(self):
-        self.prepare_heap(32)
-
         test_allocations = self.prg.test_allocations
         test_list_allocations = self.prg.test_list_allocations
         test_random = self.prg.test_random
         do_nothing = self.prg.do_nothing
 
-        array_size = 1664 * 4  # 1664 is the number of CUDA cores GTX 970
+        array_size = 1664 * 4  # 1664 is the number of CUDA cores on GTX 970
         repeats_number = 10000
 
         results = np.array([0] * array_size, dtype=np.int32)
