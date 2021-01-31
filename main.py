@@ -15,7 +15,7 @@ def main():
                        layer_size_y=1))\
         .add_layer('l1', LayerConfig())\
         .connect_layers('i1', 'l1',
-                        RandomConnectionConfig(connections_probability=0.2))
+                        RandomConnectionConfig(connection_probability=0.2))
 
     i1 = htm.get_layer('i1')
     l1 = htm.get_layer('l1')

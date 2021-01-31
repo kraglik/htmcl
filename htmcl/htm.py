@@ -79,7 +79,7 @@ class HTM:
         return self._name_to_layer[layer_name]
 
     def _randomly_connect_layers(self, a: Layer, b: Layer, config: RandomConnectionConfig):
-        assert config.connections_count is not None or config.connections_probability is not None,\
+        assert config.connections_count is not None or config.connection_probability is not None,\
             "At least one 'connection_' parameter must be set"
 
         connection_id = self._create_connection()
