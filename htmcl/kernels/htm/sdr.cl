@@ -27,6 +27,16 @@ init_sdr(global sdr* sdr,
 }
 
 
+kernel void
+set_sdr_state(global sdr* sdr,
+              global bool* new_state) {
+
+    for (unsigned int i = 0; i < sdr->size; i++) {
+        sdr->state[i] = new_state[i];
+    }
+}
+
+
 bool
 get_value(global sdr* s, unsigned int position) {
     return s->state[position];

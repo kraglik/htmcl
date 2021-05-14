@@ -454,6 +454,55 @@ clheap_init(void __global *hp, const unsigned long n_bytes)
 	}
 }
 
+__kernel void
+clheap_init_step_1(void __global *hp, const unsigned long n_bytes)
+{
+	__global struct clheap *heap = (__global struct clheap *)hp;
+	struct kma_sb __global *sb;
+	char __global *ptr;
+	unsigned int pages;
+    heap->bytes = n_bytes;
+
+    /* Empty the superblock hashtable */
+    for(unsigned int i = 0; i < KMA_SB_SIZE_BUCKETS; i++) {
+        heap->sb[i] = NULL;
+    }
+
+    ptr = (char __global *)heap;
+    ptr += sizeof(struct clheap);
+    sb = (struct clSuperBlock __global *)ptr;
+
+    /* Initialise the free-list */
+    clIndexedQueue_init(&heap->free, &sb[0], KMA_SB_SIZE_LOG2, &sb[0]);
+}
+
+__kernel void
+clheap_init_step_2(
+    void __global *hp,
+    const unsigned long start_page,
+    const unsigned long max_step
+) {
+	__global struct clheap *heap = (__global struct clheap *)hp;
+	struct kma_sb __global *sb;
+	char __global *ptr;
+	unsigned int pages;
+
+    /* Add all pages to the free list and initialise them */
+    pages = (heap->bytes >> KMA_SB_SIZE_LOG2) - 1;
+    ptr = (char __global *)heap;
+    ptr += sizeof(struct clheap);
+    sb = (struct clSuperBlock __global *)ptr;
+
+	for(long i = start_page; i < pages; i++) {
+	    if (i - start_page >= max_step) {
+	        break;
+	    }
+
+		idxd_enqueue(&heap->free, &sb[i].q);
+	}
+}
+
+
 /* For given sbid, return the size of a block in bytes */
 size_t
 _kma_size_by_sbid(int block)

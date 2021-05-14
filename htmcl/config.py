@@ -12,6 +12,9 @@ class LayerConfig:
     distal_segments_per_cell: int = 10
     apical_segments_per_cell: int = 10
 
+    initial_distal_segments_per_cell: int = 2
+    initial_apical_segments_per_cell: int = 0
+
     proximal_synapses_per_segment: int = 40
     distal_synapses_per_segment: int = 20
     apical_synapses_per_segment: int = 20
@@ -54,7 +57,7 @@ class LayerConfig:
     overlap_threshold: float = 15.0
 
     learning: bool = True
-    input_layer: bool = False
+    is_input_layer: bool = False
 
 
 @dataclass

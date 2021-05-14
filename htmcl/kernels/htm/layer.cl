@@ -13,6 +13,9 @@ typedef struct layer {
     unsigned int distal_segments_per_cell;
     unsigned int apical_segments_per_cell;
 
+    unsigned int initial_distal_segments_per_cell;
+    unsigned int initial_apical_segments_per_cell;
+
     unsigned int synapses_per_distal_segment_limit;
     unsigned int synapses_per_apical_segment_limit;
 
@@ -127,7 +130,9 @@ prepare_layer_segment_coefficients(
         unsigned int initial_synapses_per_apical_segment,
         unsigned int initial_synapses_per_distal_segment,
         unsigned int apical_segments_per_cell,
-        unsigned int distal_segments_per_cell
+        unsigned int distal_segments_per_cell,
+        unsigned int initial_apical_segments_per_cell,
+        unsigned int initial_distal_segments_per_cell
 ) {
 
     l->segment_activation_threshold         = segment_activation_threshold;
@@ -136,6 +141,8 @@ prepare_layer_segment_coefficients(
     l->initial_synapses_per_apical_segment  = initial_synapses_per_apical_segment;
     l->apical_segments_per_cell             = apical_segments_per_cell;
     l->distal_segments_per_cell             = distal_segments_per_cell;
+    l->initial_apical_segments_per_cell     = initial_apical_segments_per_cell;
+    l->initial_distal_segments_per_cell     = initial_distal_segments_per_cell;
 
 }
 

@@ -5,15 +5,16 @@ from htmcl.config import LayerConfig, RandomConnectionConfig
 
 
 def main():
-    ctx = CLContext(interactive=False, debug=True)
+    ctx = CLContext(interactive=False, debug=True, heap_size_megabytes=512)
 
     htm = HTM(ctx)\
         .add_layer('i1',
                    LayerConfig(
-                       input_layer=True,
-                       layer_size=512))\
-        .add_layer('l1', LayerConfig())\
-        .connect_layers('i1', 'l1',
+                       is_input_layer=True,
+                       layer_size=128))\
+        .add_layer('l1', LayerConfig(128))\
+        .connect_layers('i1_to_l1',
+                        'i1', 'l1',
                         RandomConnectionConfig(connection_probability=0.15))
 
     i1 = htm.get_layer('i1')

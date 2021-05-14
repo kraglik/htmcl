@@ -18,7 +18,7 @@ class Layer:
 
         self._buffer = self._ocl.make_buffer(self._layer_struct_size)
 
-        if self.config.input_layer:
+        if self.config.is_input_layer:
             self._cells_buffer = None
             self._columns_buffer = None
 
@@ -28,12 +28,13 @@ class Layer:
 
         self._sdr = SDR(
             ocl,
-            config.layer_size * config.cells_per_column
+            config.layer_size * config.cells_per_column,
+            input_buffer_required=self.config.is_input_layer
         )
 
         self._prepare_buffers()
 
-        if not self.config.input_layer:
+        if not self.config.is_input_layer:
             self._prepare_coefficients()
             self._prepare_layer()
 
@@ -82,7 +83,9 @@ class Layer:
             np.uint32(self.config.initial_synapses_per_apical_segment),
             np.uint32(self.config.initial_synapses_per_distal_segment),
             np.uint32(self.config.apical_segments_per_cell),
-            np.uint32(self.config.distal_segments_per_cell)
+            np.uint32(self.config.distal_segments_per_cell),
+            np.uint32(self.config.initial_apical_segments_per_cell),
+            np.uint32(self.config.initial_distal_segments_per_cell)
         )
 
     def _prepare_layer_columns(self):
@@ -123,3 +126,9 @@ class Layer:
 
     def cell_struct_size(self) -> int:
         return self._cell_struct_size
+
+    def set_state(self, arr: np.ndarray):
+        self._sdr.set(arr)
+
+    def buffer(self) -> cl.Buffer:
+        return self._buffer

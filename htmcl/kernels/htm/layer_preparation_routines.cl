@@ -37,7 +37,9 @@ prepare_layer_columns(global layer* l) {
 }
 
 kernel void
-prepare_input_layer(global layer* l) {
+randomly_connect_layer(global layer* l) {
+
+    
 
 }
 

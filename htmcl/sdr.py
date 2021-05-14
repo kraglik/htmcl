@@ -9,11 +9,23 @@ class SDR:
             self,
             ocl: CLContext,
             size: int,
+            input_buffer_required: bool = False
     ):
         self.ocl = ocl
         self.size = size
         self._sdr_struct_size = self._get_sdr_size_bytes()
         self._buffer = cl.Buffer(ocl.ctx, ocl.mf.READ_WRITE, size=self._sdr_struct_size)
+
+        self._input_buffer = None
+        self._input_buffer_cpu = None
+
+        if input_buffer_required:
+            self._input_buffer_cpu = np.array([False] * self.size, dtype=np.bool)
+            self._input_buffer = cl.Buffer(
+                ocl.ctx,
+                ocl.mf.READ_WRITE | ocl.mf.COPY_HOST_PTR,
+                hostbuf=self._input_buffer_cpu
+            )
 
         self._init_sdr()
 
@@ -44,3 +56,16 @@ class SDR:
     def buffer(self):
         return self._buffer
 
+    def set(self, arr: np.ndarray):
+        assert arr.dtype == np.bool, "Input array must consist of bool-typed values"
+        assert arr.shape == self._input_buffer_cpu.shape, "Input array must be of compatible size with SDR"
+
+        self._input_buffer_cpu[:] = arr[:]
+
+        cl.enqueue_copy(self.ocl.queue, self._input_buffer_cpu, self._input_buffer)
+
+        self.ocl.run_unit_kernel(
+            self.ocl.prg.set_sdr_state,
+            self._buffer,
+            self._input_buffer
+        )

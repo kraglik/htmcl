@@ -6,12 +6,16 @@ typedef struct list {
 
 global list*
 new_node(global struct clheap* heap, global list* next, global void* data) {
-    global list* node = (global list*)malloc(heap, sizeof(list));
 
-    node->next = next;
-    node->data = data;
+    global list* node = (global list*) malloc(heap, sizeof(list));
+
+    if (node != NULL) {
+        node->next = (global struct list*) next;
+        node->data = (global void*) data;
+    }
 
     return node;
+
 }
 
 
@@ -66,7 +70,7 @@ remove(
 void
 append(
     global struct clheap* heap,
-    global list * l,
+    global list* l,
     global void* item
 ) {
 
@@ -103,6 +107,16 @@ insert_at(
         *ptr_to_current = new_node(heap, *ptr_to_current, item);
     }
 
+}
+
+
+void
+prepend(
+    global struct clheap* heap,
+    global list* global* l,
+    global void* item
+) {
+    *l = new_node(heap, *l, item);
 }
 
 
