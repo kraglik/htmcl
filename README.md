@@ -11,7 +11,7 @@ TODO List:
 - [x] Implement generic list
     - [x] Test it
 - [x] Implement input layer
-- [ ] Implement spatial pooler
+- [x] Implement spatial pooler
 - [ ] Implement temporal pooler
 - [ ] Implement classifier
 - [ ] Implement multi-layer architecture
