@@ -9,6 +9,27 @@ typedef struct dendrite {
 } dendrite;
 
 
+global dendrite*
+build_dendrite(global struct clheap* heap) {
+
+    global dendrite* d = (global dendrite*) malloc(heap, sizeof(dendrite));
+
+    if (d != NULL) {
+
+        d->learning = false;
+        d->was_learning = false;
+
+        d->active = false;
+        d->was_active = false;
+        d->sequence = false;
+        d->synapses = NULL;
+
+    }
+
+    return d;
+}
+
+
 void
 distal_dendrite_step(global dendrite* d) {
     d->was_active = d->active;

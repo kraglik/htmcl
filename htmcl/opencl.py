@@ -85,7 +85,7 @@ class CLContext:
 
         self.heap = cl.Buffer(self.ctx, self.mf.READ_WRITE, size=n_bytes)
 
-        self.prg.clheap_init_step_1(
+        self.prg.clheap_init(
             self.queue,
             (1, ),
             None,
@@ -94,16 +94,16 @@ class CLContext:
         )
         self.queue.finish()
 
-        for i in range(n_blocks, 1024):
-            self.prg.clheap_init_step_2(
-                self.queue,
-                (1, ),
-                None,
-                self.heap,
-                np.uint64(i),
-                np.uint64(1024)
-            )
-            self.queue.finish()
+        # for i in range(n_blocks, 1024):
+        #     self.prg.clheap_init_step_2(
+        #         self.queue,
+        #         (1, ),
+        #         None,
+        #         self.heap,
+        #         np.uint64(i),
+        #         np.uint64(1024)
+        #     )
+        #     self.queue.finish()
 
         # self.run_unit_kernel(self.prg.clheap_init, self.heap, np.uint64(n_bytes))
 
