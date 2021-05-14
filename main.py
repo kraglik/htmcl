@@ -11,11 +11,12 @@ def main():
         .add_layer('i1',
                    LayerConfig(
                        is_input_layer=True,
-                       layer_size=128))\
-        .add_layer('l1', LayerConfig(layer_size=128))\
+                       layer_size=128,
+                       desired_local_activity=6))\
+        .add_layer('l1', LayerConfig(layer_size=128, desired_local_activity=6))\
         .connect_layers('i1_to_l1',
                         'i1', 'l1',
-                        RandomConnectionConfig(connection_probability=0.15))
+                        RandomConnectionConfig(connection_probability=0.3))
 
     i1 = htm.get_layer('i1')
     l1 = htm.get_layer('l1')

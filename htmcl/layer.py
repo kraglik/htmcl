@@ -60,6 +60,7 @@ class Layer:
             self._ocl.prg.prepare_layer_primary_coefficients,
             self._buffer,
             np.uint32(self.config.layer_size),
+            np.uint32(self.config.desired_local_activity),
             np.uint32(self.config.cells_per_column),
             np.uint32(self.config.learning),
             np.uint32(self.id)

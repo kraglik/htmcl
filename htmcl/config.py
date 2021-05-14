@@ -6,6 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class LayerConfig:
     layer_size: int = 2048
+    desired_local_activity: int = 40
 
     cells_per_column: int = 8
 

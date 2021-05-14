@@ -3,6 +3,7 @@ typedef struct layer {
     unsigned int id;
 
     unsigned int size;
+    unsigned int desired_local_activity;
 
     unsigned int segment_activation_threshold;
 
@@ -92,6 +93,7 @@ prepare_layer_primary_coefficients(
         global layer* l,
 
         unsigned int size,
+        unsigned int desired_local_activity,
         unsigned int cells_per_column,
         unsigned int learning,
         unsigned int id
@@ -99,6 +101,7 @@ prepare_layer_primary_coefficients(
 
     l->id = id;
     l->size = size;
+    l->desired_local_activity = desired_local_activity;
     l->cells_per_column = cells_per_column;
     l->learning = learning;
 

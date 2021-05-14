@@ -6,6 +6,12 @@ prepare_layer_columns(global layer* l) {
     global cell* cells = &l->cells[id * l->cells_per_column];
     global column* c = &l->columns[id];
 
+    c->overlap_min = l->overlap_threshold;
+    c->active_duty_cycle = 1.0f;
+    c->overlap_duty_cycle = 1.0f;
+    c->min_duty_cycle = 1.0f;
+    c->boost = 1.0f;
+
     c->id = id;
     c->cells = cells;
     c->segments = NULL;

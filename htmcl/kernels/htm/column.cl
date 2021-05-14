@@ -7,7 +7,9 @@ typedef struct column {
 
     float overlap_min;
     float overlap;
-    float synaptic_activation;
+    float active_duty_cycle;
+    float min_duty_cycle;
+    float overlap_duty_cycle;
     float boost;
 
     bool learning, was_learning;
