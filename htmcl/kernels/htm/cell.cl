@@ -58,15 +58,18 @@ best_segment(global struct layer* l, global cell* c) {
 
     global list* cur_seg = c->distal_segments;
 
+    // For segment in cell.distal_segments
     while (cur_seg != NULL) {
         global dendrite* current_segment = (global dendrite*) cur_seg->data;
 
         unsigned int segment_activation = 0;
         global list* cur_syn = current_segment->synapses;
 
+        // For synapse in segment.synapses
         while (cur_syn != NULL) {
             global synapse* current_synapse = (global synapse*) cur_syn->data;
 
+            // If synapse is active and presynaptic cell is also active
             if (current_synapse->permanence >= l->permanence_threshold
                 && l->cells[current_synapse->presynaptic_cell_id].active) {
 
@@ -76,6 +79,7 @@ best_segment(global struct layer* l, global cell* c) {
             cur_syn = cur_syn->next;
         }
 
+        // Replace current best if this segment is better
         if (segment_activation > best_activation) {
             best_activation = segment_activation;
             best_segment = current_segment;
@@ -87,3 +91,35 @@ best_segment(global struct layer* l, global cell* c) {
     return best_segment;
 };
 
+
+bool
+cell_predicted(global cell* c) {
+    return c->was_predictive && c->active;
+}
+
+
+void
+dendrite_step(global layer* l, global dendrite* d);
+
+
+void
+cell_step(global layer* l, global cell* c) {
+
+    c->was_predictive = c->predictive;
+    c->was_learning = c->learning;
+    c->was_active = c->active;
+
+    c->predictive = false;
+    c->learning = false;
+    c->active = false;
+
+    global list* cur_seg = c->distal_segments;
+
+    while (cur_seg != NULL) {
+        global dendrite* d = (global dendrite*) cur_seg->data;
+
+        dendrite_step(l, d);
+
+        cur_seg = cur_seg->next;
+    }
+}

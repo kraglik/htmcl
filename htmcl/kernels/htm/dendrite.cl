@@ -31,7 +31,7 @@ build_dendrite(global struct clheap* heap) {
 
 
 void
-distal_dendrite_step(global dendrite* d) {
+distal_dendrite_step(global layer* l, global dendrite* d) {
     d->was_active = d->active;
     d->active = false;
     d->was_learning = d->learning;
