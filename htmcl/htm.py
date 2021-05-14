@@ -103,7 +103,7 @@ class HTM:
         connection = self._create_connection(a, b, config)
         self._connections.append(connection)
         self._connections_by_name[name] = connection
-        connection.connect(self._buffer)
+        connection.connect(self._buffer, a, b)
 
     def _create_connection(self, i: Layer, o: Layer, config: RandomConnectionConfig) -> Connection:
         conn_id = self._next_connection_id

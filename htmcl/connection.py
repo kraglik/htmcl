@@ -39,13 +39,15 @@ class Connection:
             np.float32(self.config.connection_probability)
         )
 
-    def connect(self, htm_buffer: cl.Buffer):
+    def connect(self, htm_buffer: cl.Buffer, input: Layer, target: Layer):
         self._ocl.prg.randomly_connect_layers(
             self._ocl.queue,
             (int(self.target_layer.config.layer_size), ),
             (1, ),
             self._ocl.heap,
             htm_buffer,
+            input.buffer(),
+            target.buffer(),
             self._ocl.randoms,
             np.uint32(self.id),
             np.float32(self.config.connection_probability)

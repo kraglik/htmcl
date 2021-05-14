@@ -33,9 +33,9 @@ class Layer:
         )
 
         self._prepare_buffers()
+        self._prepare_coefficients()
 
         if not self.config.is_input_layer:
-            self._prepare_coefficients()
             self._prepare_layer()
 
     def _prepare_buffers(self):
