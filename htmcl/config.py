@@ -5,8 +5,7 @@ from dataclasses import dataclass
 
 @dataclass
 class LayerConfig:
-    layer_size_x: int = 32
-    layer_size_y: int = 32
+    layer_size: int = 2048
 
     cells_per_column: int = 8
 

@@ -2,8 +2,7 @@ typedef struct layer {
 
     unsigned int id;
 
-    unsigned int size_x;
-    unsigned int size_y;
+    unsigned int size;
 
     unsigned int segment_activation_threshold;
 
@@ -52,7 +51,9 @@ typedef struct layer {
     float overlap_duty_cycle;
 
     bool learning;
-    char __learning_padding[7];
+    bool input_layer;
+
+    char __flags_padding[6];
 
     global struct cell* cells;
     global struct column* columns;
@@ -87,16 +88,14 @@ kernel void
 prepare_layer_primary_coefficients(
         global layer* l,
 
-        unsigned int size_x,
-        unsigned int size_y,
+        unsigned int size,
         unsigned int cells_per_column,
         unsigned int learning,
         unsigned int id
 ) {
 
     l->id = id;
-    l->size_x = size_x;
-    l->size_y = size_y;
+    l->size = size;
     l->cells_per_column = cells_per_column;
     l->learning = learning;
 

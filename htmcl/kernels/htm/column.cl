@@ -1,6 +1,5 @@
 typedef struct column {
 
-    unsigned int x, y;
     unsigned long id;
 
     global cell* cells;

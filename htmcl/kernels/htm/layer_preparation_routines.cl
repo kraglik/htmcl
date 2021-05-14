@@ -3,15 +3,10 @@ prepare_layer_columns(global layer* l) {
 
     unsigned int id = get_global_id(0);
 
-    unsigned int x = id % l->size_x;
-    unsigned int y = id / l->size_x;
-
     global cell* cells = &l->cells[id * l->cells_per_column];
     global column* c = &l->columns[id];
 
     c->id = id;
-    c->x = x;
-    c->y = y;
     c->cells = cells;
     c->segments = NULL;
 

@@ -28,9 +28,7 @@ class Layer:
 
         self._sdr = SDR(
             ocl,
-            config.layer_size_x,
-            config.layer_size_y,
-            config.cells_per_column
+            config.layer_size * config.cells_per_column
         )
 
         self._prepare_buffers()
@@ -60,8 +58,7 @@ class Layer:
         self._ocl.run_unit_kernel(
             self._ocl.prg.prepare_layer_primary_coefficients,
             self._buffer,
-            np.uint32(self.config.layer_size_x),
-            np.uint32(self.config.layer_size_y),
+            np.uint32(self.config.layer_size),
             np.uint32(self.config.cells_per_column),
             np.uint32(self.config.learning),
             np.uint32(self.id)
@@ -91,7 +88,7 @@ class Layer:
     def _prepare_layer_columns(self):
         self._ocl.prg.prepare_layer_columns(
             self._ocl.queue,
-            (int(self.config.layer_size_x * self.config.layer_size_y), ),
+            (int(self.config.layer_size), ),
             (1, ),
             self._buffer
         )
@@ -109,18 +106,13 @@ class Layer:
     def _get_cells_buffer_size(self) -> int:
         return int(
             self._cell_struct_size * (
-                self.config.layer_size_x *
-                self.config.layer_size_y *
-                self.config.cells_per_column
+                self.config.layer_size * self.config.cells_per_column
             )
         )
 
     def _get_columns_buffer_size(self) -> int:
         return int(
-            self._column_struct_size * (
-                self.config.layer_size_x *
-                self.config.layer_size_y
-            )
+            self._column_struct_size * self.config.layer_size
         )
 
     def layer_struct_size(self) -> int:

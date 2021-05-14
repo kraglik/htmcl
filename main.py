@@ -11,8 +11,7 @@ def main():
         .add_layer('i1',
                    LayerConfig(
                        input_layer=True,
-                       layer_size_x=1024,
-                       layer_size_y=1))\
+                       layer_size=512))\
         .add_layer('l1', LayerConfig())\
         .connect_layers('i1', 'l1',
                         RandomConnectionConfig(connection_probability=0.15))

@@ -8,14 +8,10 @@ class SDR:
     def __init__(
             self,
             ocl: CLContext,
-            size_x: int = 1,
-            size_y: int = 1,
-            size_z: int = 1,
-            n_dims: int = 3
+            size: int,
     ):
         self.ocl = ocl
-        self.shape = (size_x, size_y, size_z)
-        self.n_dims = n_dims
+        self.size = size
         self._sdr_struct_size = self._get_sdr_size_bytes()
         self._buffer = cl.Buffer(ocl.ctx, ocl.mf.READ_WRITE, size=self._sdr_struct_size)
 
@@ -28,9 +24,7 @@ class SDR:
         self.ocl.run_unit_kernel(
             self.ocl.prg.get_sdr_size_bytes,
             result_b,
-            np.uint32(self.shape[0]),
-            np.uint32(self.shape[1]),
-            np.uint32(self.shape[2])
+            np.uint32(self.size)
         )
         cl.enqueue_copy(self.ocl.queue, result, result_b)
         self.ocl.queue.finish()
@@ -44,10 +38,7 @@ class SDR:
         self.ocl.run_unit_kernel(
             self.ocl.prg.init_sdr,
             self._buffer,
-            np.uint32(self.shape[0]),
-            np.uint32(self.shape[1]),
-            np.uint32(self.shape[2]),
-            np.uint32(self.n_dims)
+            np.uint32(self.size)
         )
 
     def buffer(self):
