@@ -10,7 +10,7 @@ typedef struct htm {
 
 
 kernel void
-get_htm_size_bytes(global unsigned int* result) {
+get_htm_size_bytes(global unsigned long* result) {
 
     result[0] = sizeof(htm);
 

@@ -67,7 +67,7 @@ typedef struct layer {
 
 
 kernel void
-get_layer_size_bytes(global unsigned int* result) {
+get_layer_size_bytes(global unsigned long* result) {
     result[0] = sizeof(layer);
 }
 

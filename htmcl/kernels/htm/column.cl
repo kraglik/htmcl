@@ -18,7 +18,7 @@ typedef struct column {
 
 
 kernel void
-get_column_size_bytes(global unsigned int* result) {
+get_column_size_bytes(global unsigned long* result) {
     result[0] = sizeof(column);
 }
 

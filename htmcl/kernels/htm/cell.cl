@@ -14,7 +14,7 @@ typedef struct cell {
 
 
 kernel void
-get_cell_size_bytes(global unsigned int* result) {
+get_cell_size_bytes(global unsigned long* result) {
     result[0] = sizeof(cell);
 }
 

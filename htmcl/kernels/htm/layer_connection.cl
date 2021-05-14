@@ -10,7 +10,7 @@ typedef struct layer_connection {
 
 
 kernel void
-get_layer_connection_size_bytes(global unsigned int* result) {
+get_layer_connection_size_bytes(global unsigned long* result) {
 
     result[0] = sizeof(layer_connection);
 

@@ -10,7 +10,7 @@ typedef struct sdr {
 } sdr;
 
 kernel void
-get_sdr_size_bytes(global unsigned int* result, unsigned int size) {
+get_sdr_size_bytes(global unsigned long* result, unsigned int size) {
 
     result[0] = sizeof(sdr) + sizeof(bool) * size;
 

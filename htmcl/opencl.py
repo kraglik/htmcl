@@ -94,7 +94,7 @@ class CLContext:
         )
         self.queue.finish()
 
-        for i in range(64513, n_blocks, 1024):
+        for i in range(n_blocks, 1024):
             self.prg.clheap_init_step_2(
                 self.queue,
                 (1, ),

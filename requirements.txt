@@ -1,5 +1,5 @@
 six==1.15.0
 numpy==1.19.5
-pyopencl==2021.1
+pyopencl==2021.1.6
 pybind11==2.6.2
-mako=1.1.4
+mako==1.1.4
