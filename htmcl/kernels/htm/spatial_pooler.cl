@@ -35,10 +35,6 @@ spatial_pooler_phase_1(global struct htm* net, global struct layer* l) {
         cur_seg = cur_seg->next;
     }
 
-    if (overlap < c->overlap_min) {
-        overlap = 0.0f;
-    }
-
     overlap *= c->boost;
     c->overlap = overlap;
 }
@@ -58,7 +54,7 @@ spatial_pooler_phase_2(global struct layer* l) {
         }
     }
 
-    if (count_greater < l->desired_local_activity && c->overlap > 0.0f) {
+    if (count_greater < l->desired_local_activity && c->overlap > l->overlap_threshold) {
         c->active = true;
     }
 }
