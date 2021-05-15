@@ -8,6 +8,8 @@ spatial_pooler_phase_1(global struct htm* net, global struct layer* l) {
 
     global list* cur_seg = c->segments;
 
+    column_step(l, c);
+
     while (cur_seg != NULL) {
         global proximal_dendrite* d = (global proximal_dendrite*) cur_seg->data;
 
@@ -64,6 +66,9 @@ spatial_pooler_phase_2(global struct layer* l) {
 
 kernel void
 spatial_pooler_phase_3(global struct htm* net, global struct layer* l) {
+
+    if (!l->learning)
+        return;
 
     unsigned long column_id = get_global_id(0);
     global column* c = &l->columns[column_id];

@@ -31,10 +31,30 @@ build_dendrite(global struct clheap* heap) {
 
 
 void
-distal_dendrite_step(global layer* l, global dendrite* d) {
+dendrite_step(global layer* l, global dendrite* d) {
     d->was_active = d->active;
     d->active = false;
     d->was_learning = d->learning;
     d->learning = false;
     d->sequence = false;
+
+    global list* cur_syn = d->synapses;
+
+    unsigned int activation = 0;
+
+    while (cur_syn != NULL) {
+        global synapse* current_synapse = (global synapse*) cur_syn->data;
+
+        if (current_synapse->permanence >= l->permanence_threshold
+            && cell_was_active(get_cell_from_layer(l, current_synapse->presynaptic_cell_id))) {
+
+            activation += 1;
+        }
+
+        cur_syn = cur_syn->next;
+    }
+
+    if (activation >= l->segment_activation_threshold) {
+        d->active = true;
+    }
 }

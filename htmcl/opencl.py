@@ -31,14 +31,14 @@ class CLContext:
         'connection_routines.cl',
         'layer_preparation_routines.cl',
         'spatial_pooler.cl',
-        'temporal_pooler.cl'
+        'temporal_memory.cl'
     ]
 
     MAIN_KERNELS = [
         'utils.cl'
     ]
 
-    BLOCK_SIZE_BYTES = 4096
+    BLOCK_SIZE_BYTES = 1048576
     CL_HEAP_SIZE_BYTES = 120
     MAX_U64 = 9223372036854775806
 
@@ -81,9 +81,9 @@ class CLContext:
 
     def prepare_heap(self, heap_size_mbytes: t.Union[float, int]) -> cl.Buffer:
         n_blocks = (int(heap_size_mbytes * 1024 * 1024) - self.CL_HEAP_SIZE_BYTES) // self.BLOCK_SIZE_BYTES
-        n_bytes = n_blocks * self.BLOCK_SIZE_BYTES + self.CL_HEAP_SIZE_BYTES
+        n_bytes = (n_blocks + 1) * self.BLOCK_SIZE_BYTES + self.CL_HEAP_SIZE_BYTES
 
-        self.heap = cl.Buffer(self.ctx, self.mf.READ_WRITE, size=n_bytes)
+        self.heap = cl.Buffer(self.ctx, self.mf.READ_WRITE, size=n_bytes + self.BLOCK_SIZE_BYTES)
 
         self.prg.clheap_init(
             self.queue,
@@ -93,19 +93,6 @@ class CLContext:
             np.uint64(n_bytes)
         )
         self.queue.finish()
-
-        # for i in range(n_blocks, 1024):
-        #     self.prg.clheap_init_step_2(
-        #         self.queue,
-        #         (1, ),
-        #         None,
-        #         self.heap,
-        #         np.uint64(i),
-        #         np.uint64(1024)
-        #     )
-        #     self.queue.finish()
-
-        # self.run_unit_kernel(self.prg.clheap_init, self.heap, np.uint64(n_bytes))
 
         return self.heap
 

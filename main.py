@@ -5,7 +5,8 @@ from htmcl.config import LayerConfig, RandomConnectionConfig
 
 
 def main():
-    ctx = CLContext(interactive=False, debug=True, heap_size_megabytes=256)
+    ctx = CLContext(interactive=False, debug=True, heap_size_megabytes=512)
+    ctx.run_test()
 
     htm = HTM(ctx)\
         .add_layer('i1',

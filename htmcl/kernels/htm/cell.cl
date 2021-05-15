@@ -10,6 +10,7 @@ typedef struct cell {
     bool active, was_active;
     bool learning, was_learning;
     bool predictive, was_predictive;
+    bool predicted, bursting;
 
 } cell;
 
@@ -47,6 +48,12 @@ build_cell(
 kernel void
 get_cell_size_bytes(global unsigned long* result) {
     result[0] = sizeof(cell);
+}
+
+
+bool
+cell_was_active(global cell* c) {
+    return c->was_active;
 }
 
 
@@ -92,6 +99,40 @@ best_segment(global struct layer* l, global cell* c) {
 };
 
 
+global dendrite*
+active_segment(global layer* l, global cell* c) {
+    global list* cur_seg = c->distal_segments;
+
+    while (cur_seg != NULL) {
+        global dendrite* segment = (global dendrite*) cur_seg->next;
+
+        global list* cur_syn = segment->synapses;
+
+        float segment_activation = 0.0f;
+
+        while (cur_syn != NULL) {
+            global synapse* current_synapse = (global synapse*) cur_syn->data;
+
+            if (current_synapse->permanence > l->permanence_threshold
+                && l->cells[current_synapse->presynaptic_cell_id].was_active) {
+                segment_activation += 1.0f;
+            }
+
+            cur_syn = cur_syn->next;
+        }
+
+        if (segment_activation > l->segment_activation_threshold)
+            return segment;
+
+        cur_seg = cur_seg->next;
+    }
+
+    // Won't happen, because cell can only be in predictive state due to some active distal input,
+    // which implies that there is at least one working distal dendritic segment.
+    return NULL;
+}
+
+
 bool
 cell_predicted(global cell* c) {
     return c->was_predictive && c->active;
@@ -122,4 +163,12 @@ cell_step(global layer* l, global cell* c) {
 
         cur_seg = cur_seg->next;
     }
+}
+
+global struct cell*
+get_cell_from_layer(
+    global struct layer* l,
+    unsigned int cell_pos
+) {
+    return l->cells + cell_pos;
 }
