@@ -224,7 +224,7 @@ clIndexedQueue_idx2ptr(clIndexedQueue __global *q, uint32_t idx)
 {
 	size_t i = idx;
 	idx >>= 1;
-	idx &= 0xfffff;
+	idx &= 0xffffff;
 	if(idx == 0)
 		return 0;
 
@@ -236,9 +236,9 @@ clIndexedQueue_idx2ptr(clIndexedQueue __global *q, uint32_t idx)
 	return &q->base[i];
 }
 
-#define PTR(i,t) ((i & 0x1ffffe) | ((((t)+1) & 0x7ff) << 22))
-#define TAG(i) ((i >> 22) & 0x7ff)
-#define IDX(i) ((i & 0x1ffffe) >> 1)
+#define PTR(i,t) ((i & 0x1fffffe) | ((((t)+1) & 0x7f) << 26))
+#define TAG(i) ((i >> 26) & 0x7f)
+#define IDX(i) ((i & 0x1fffffe) >> 1)
 
 __kernel void
 clIndexedQueue_init(void __global *queue, void __global *base,

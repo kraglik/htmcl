@@ -191,7 +191,7 @@ class CLContext:
                 x == y for x, y in zip(results, list(range(0, array_size * 10, 10)))), "Kernel returned wrong result"
             print("Kernel allocations are OK")
 
-        test_random_speed()
+        # test_random_speed()
         # test_allocation_speed()
         test_lists()
 

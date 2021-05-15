@@ -1,5 +1,5 @@
 kernel void
-temporal_pooler_phase_1(
+temporal_memory_phase_1(
     global struct layer* l
 ) {
     unsigned long column_id = get_global_id(0);
@@ -33,7 +33,7 @@ temporal_pooler_phase_1(
 
 
 kernel void
-temporal_pooler_phase_2(
+temporal_memory_phase_2(
     global struct layer* l
 ) {
     unsigned long column_id = get_global_id(0);
